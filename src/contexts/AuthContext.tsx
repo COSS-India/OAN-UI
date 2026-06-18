@@ -75,15 +75,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [publicKey, setPublicKey] = useState<CryptoKey | null>(null);
 
-  // Keep this in sync with bharat-oan-api/jwt_public_key.pem.
-  const publicKeyPEM = `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoiAT5pkWCk7KgBXDFO6C
-FHo1fmVMUHOCDXJ1EcAb11REiSHgxlP9TPLCs8qPSe5eeJAHGn9sqB0p0jC8cWzh
-RvnrCqRhNXhmOyqrCTudBT8ePnMYU7H/dpoqF1zpYctDVkaYOf0l/H+uWk55f+Zy
-zZVcpQAi2lTwNQP2teIHqt4YNsOKmX9J2BvczRj4wdCpp84+UkFJ+lVftHbEoxYM
-OnCObibmuJDPvwrkHtACJZFy1Dc371evaaTN3dGE/P7MLXRA+XtInY5lYfsB23/Q
-a37S+srKe59wFypSMOU+ZMvgFA2oK0zA1WEC93000n5HEQMJU8r7pCgKhq7oD8QJ
-hwIDAQAB
+  // JWT public key used to verify the auth token. Must match the backend's
+  // jwt_public_key.pem for the target environment. Override per environment with
+  // VITE_JWT_PUBLIC_KEY (newlines may be encoded as \n); falls back to the local
+  // dev key below. See OAN_HOSTING_PLAN.md.
+  const publicKeyPEM =
+    (import.meta.env.VITE_JWT_PUBLIC_KEY as string | undefined)?.replace(/\\n/g, "\n") ||
+    `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7jUqcgYmM98fsaD31Rn2
+l5111Tz3+uz+AiHF0hllyEokMeNaAyYzVBmymotCKm2Qc2AsKVdvctHrdgpJaM+t
+6Kq1tvzBtSw0vSCUziMw0euUiw3ZHQmpsZ65GfAzrxmVIJmDWDZ9I5RT3OSUthwb
+6kRGbrQ6C1g5eb7E2HDcj/Jwe6sj8v4Pe+k6ciLiCn5DYJnIMRv1GbYXLyiepOOU
+grWJVdaIKDFRs9p433w+vFp6yfkuCxhDAIAdUozMwZlHbYDRy96tCYyz+DQT8cda
+u4/6syN34CJNzEn+3wtoKDlBtCLivtmBoRSWRjmNBIopoYvYl/dC1bKGSrq2fqMN
+iQIDAQAB
 -----END PUBLIC KEY-----`;
 
   // Fetch new JWT token from /api/token and store it
