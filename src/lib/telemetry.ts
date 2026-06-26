@@ -204,7 +204,10 @@ export const startTelemetry = async (
   userDetailsObj: { preferred_username: string; email: string },
 ) => {
   if (typeof Telemetry === 'undefined') return;
-  
+  // Telemetry can be disabled per-environment (e.g. where the Sunbird
+  // observability-service route is not provisioned and POSTs 404).
+  if (import.meta.env.VITE_TELEMETRY_ENABLED === 'false') return;
+
   const sessionStartAt = Date.now();
 
   await initFingerprintContext(sessionStartAt);
@@ -219,7 +222,9 @@ export const startTelemetry = async (
     uid: userDetailsObj['preferred_username'] || "DEFAULT-USER",
     did: userDetailsObj['email'] || "DEFAULT-USER",
     authtoken: AuthTokenGenerate.generate(key, secret),
-    host: "/observability-service",
+    // Sunbird observability-service host. Env-overridable per environment so the
+    // telemetry endpoint matches where the backend route actually lives.
+    host: import.meta.env.VITE_TELEMETRY_HOST ?? "/observability-service",
   };
 
   Telemetry.start(config, "content_id", "contetn_ver", {}, {});

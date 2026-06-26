@@ -38,8 +38,13 @@ window.addEventListener("vite:preloadError", async (event) => {
 });
 
 const routeProgress = createRouteProgress();
+// App is served under a sub-path on the platform (e.g. /oan). The router basepath
+// must match Vite's `base` so deep links like /oan/chat resolve correctly.
+// Env-overridable (VITE_ROUTER_BASEPATH); defaults to /oan. Set to "/" to run at root.
+const ROUTER_BASEPATH = import.meta.env.VITE_ROUTER_BASEPATH ?? "/oan";
 const router = createRouter({
 	routeTree,
+	basepath: ROUTER_BASEPATH,
 	context: { queryClient },
 	defaultPendingComponent: () => (
 		<div className="bg-background flex h-screen w-screen items-center justify-center">
