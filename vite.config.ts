@@ -16,8 +16,15 @@ const virtualRouteFileChangeReloadPlugin: PluginOption = {
 		});
 	}
 };
+// The app is served under a sub-path on the platform (e.g. /oan/), so assets must
+// resolve under that base. Env-overridable (VITE_BASE); defaults to /oan/.
+// Set VITE_BASE=/ to build/serve at root. Must stay in sync with the router
+// basepath in src/main.tsx (VITE_ROUTER_BASEPATH).
+const BASE = process.env.VITE_BASE ?? "/oan/";
+
 // https://vite.dev/config/
 export default defineConfig({
+	base: BASE,
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "src"),
