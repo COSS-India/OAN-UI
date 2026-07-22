@@ -18,6 +18,11 @@ const virtualRouteFileChangeReloadPlugin: PluginOption = {
 };
 // https://vite.dev/config/
 export default defineConfig({
+	// Serve assets under a sub-path when VITE_BASE_PATH is set (e.g. "/bv"),
+	// otherwise from root. Normalised to a leading+trailing slash for Vite.
+	base: process.env.VITE_BASE_PATH
+		? `/${process.env.VITE_BASE_PATH.split("/").filter(Boolean).join("/")}/`
+		: "/",
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "src"),
