@@ -74,8 +74,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [publicKey, setPublicKey] = useState<CryptoKey | null>(null);
 
-  // Keep this in sync with bharat-oan-api/jwt_public_key.pem.
-  const publicKeyPEM = `-----BEGIN PUBLIC KEY-----
+  // Default is kept in sync with bharat-oan-api/jwt_public_key.pem. Deployments
+  // that mint tokens with a different keypair (e.g. the demo host under /bv)
+  // inject the matching public key via VITE_JWT_PUBLIC_KEY (PEM with escaped \n).
+  const publicKeyPEM = import.meta.env.VITE_JWT_PUBLIC_KEY
+    ? import.meta.env.VITE_JWT_PUBLIC_KEY.replace(/\\n/g, "\n")
+    : `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoiAT5pkWCk7KgBXDFO6C
 FHo1fmVMUHOCDXJ1EcAb11REiSHgxlP9TPLCs8qPSe5eeJAHGn9sqB0p0jC8cWzh
 RvnrCqRhNXhmOyqrCTudBT8ePnMYU7H/dpoqF1zpYctDVkaYOf0l/H+uWk55f+Zy
